@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Kickoff Checklist — Agency OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --border: #e2ddd5;
+  --border2: #ccc8be;
+  --ink: #1c1a16;
+  --ink2: #6b6760;
+  --ink3: #a8a49e;
+  --green: #2d6a4f;
+  --green-bg: #eaf4ee;
+  --green-mid: #b7dfc7;
+  --amber: #92510b;
+  --amber-bg: #fef3e2;
+  --red: #9b2335;
+  --red-bg: #fdeef0;
+  --blue: #1a4a7a;
+  --blue-bg: #e8f0fa;
+  --accent: #c8522a;
+  --accent-bg: #fdf0eb;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--ink);
+  padding: 36px 48px 32px;
+  position: relative; overflow: hidden;
+}
+.header::after {
+  content: 'KICKOFF';
+  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+  font-family: 'Syne', sans-serif;
+  font-size: 120px; font-weight: 700;
+  color: rgba(255,255,255,0.03);
+  letter-spacing: -4px; white-space: nowrap;
+  pointer-events: none;
+}
+.header-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 24px;
+  margin-bottom: 24px;
+}
+.header-left {}
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700; color: #f7f6f2;
+  line-height: 1.1; margin-bottom: 8px;
+}
+.header-desc {
+  font-size: 13px; color: rgba(247,246,242,0.45);
+  max-width: 480px; line-height: 1.7;
+}
+.header-right { flex-shrink: 0; }
+.progress-ring-wrap {
+  width: 80px; height: 80px; position: relative;
+}
+.progress-ring-wrap svg { transform: rotate(-90deg); }
+.progress-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 5; }
+.progress-ring-fill {
+  fill: none; stroke: var(--accent);
+  stroke-width: 5; stroke-linecap: round;
+  stroke-dasharray: 226; stroke-dashoffset: 226;
+  transition: stroke-dashoffset .5s ease;
+}
+.progress-label {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.progress-pct {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 700; color: #f7f6f2;
+  line-height: 1;
+}
+.progress-sub { font-size: 9px; color: rgba(247,246,242,0.4); margin-top: 2px; }
+
+/* Project meta row */
+.meta-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.meta-field {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 10px 14px;
+  display: flex; flex-direction: column; gap: 3px;
+  min-width: 140px;
+}
+.meta-label {
+  font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(247,246,242,0.3);
+}
+.meta-value {
+  font-size: 13px; font-weight: 500; color: #f7f6f2;
+  background: transparent; border: none; outline: none;
+  font-family: 'Instrument Sans', sans-serif;
+  width: 100%;
+}
+.meta-value::placeholder { color: rgba(247,246,242,0.2); }
+
+/* ── Phase Nav ── */
+.phase-nav {
+  display: flex; gap: 0;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  overflow-x: auto; padding: 0 32px;
+}
+.phase-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 20px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink2); cursor: pointer;
+  border: none; background: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all .15s;
+}
+.phase-btn:hover { color: var(--ink); }
+.phase-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.phase-btn.done { color: var(--green); border-bottom-color: var(--green); }
+.phase-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  background: var(--surface2); color: var(--ink2);
+  flex-shrink: 0; transition: all .15s;
+}
+.phase-btn.active .phase-dot { background: var(--accent-bg); color: var(--accent); }
+.phase-btn.done .phase-dot { background: var(--green-bg); color: var(--green); }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 0; min-height: calc(100vh - 220px);
+}
+.main-col { padding: 32px 40px; }
+.side-col {
+  border-left: 1px solid var(--border);
+  padding: 28px 24px;
+  background: var(--surface);
+}
+
+/* ── Phase Panel ── */
+.phase-panel { display: none; }
+.phase-panel.active { display: block; }
+
+.phase-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 28px;
+}
+.phase-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.phase-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px; font-weight: 700; color: var(--ink);
+}
+.phase-desc { font-size: 13px; color: var(--ink2); margin-top: 2px; }
+
+/* ── Checklist Group ── */
+.check-group { margin-bottom: 28px; }
+.group-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.check-item {
+  display: flex; gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  background: var(--surface);
+  position: relative;
+}
+.check-item:hover { border-color: var(--border2); background: var(--surface2); }
+.check-item.checked {
+  background: var(--green-bg);
+  border-color: var(--green-mid);
+}
+.check-item.checked .check-text { color: var(--ink2); text-decoration: line-through; }
+.check-item.checked .check-note { color: var(--ink3); }
+
+.check-box {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0; display: flex;
+  align-items: center; justify-content: center;
+  transition: all .15s; margin-top: 1px;
+  background: var(--surface);
+}
+.check-item.checked .check-box {
+  background: var(--green); border-color: var(--green);
+}
+.check-item.checked .check-box::after {
+  content: '';
+  display: block; width: 10px; height: 6px;
+  border-left: 2px solid white; border-bottom: 2px solid white;
+  transform: rotate(-45deg) translateY(-1px);
+}
+.check-body { flex: 1; min-width: 0; }
+.check-text {
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  line-height: 1.4; margin-bottom: 3px;
+}
+.check-note { font-size: 11px; color: var(--ink2); line-height: 1.5; }
+.check-tag {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+  margin-left: auto; flex-shrink: 0;
+  align-self: flex-start; white-space: nowrap;
+}
+.tag-am { background: var(--blue-bg); color: var(--blue); }
+.tag-designer { background: var(--amber-bg); color: var(--amber); }
+.tag-creator { background: var(--accent-bg); color: var(--accent); }
+.tag-team { background: var(--surface2); color: var(--ink2); }
+.tag-media { background: #eef2ff; color: #3730a3; }
+
+/* ── Priority Flag ── */
+.flag {
+  width: 4px; border-radius: 2px;
+  align-self: stretch; flex-shrink: 0;
+}
+.flag-high { background: #e53e3e; }
+.flag-med  { background: var(--amber); }
+.flag-low  { background: var(--border2); }
+
+/* ── Notes Box ── */
+.notes-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  margin-top: 8px;
+}
+.notes-box textarea {
+  width: 100%; background: none;
+  border: none; outline: none; resize: none;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px; color: var(--ink);
+  line-height: 1.6; min-height: 72px;
+}
+.notes-box textarea::placeholder { color: var(--ink3); }
+.notes-label {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink3); margin-bottom: 6px;
+}
+
+/* ── Sidebar ── */
+.side-section { margin-bottom: 28px; }
+.side-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  margin-bottom: 12px;
+}
+.progress-list { display: flex; flex-direction: column; gap: 8px; }
+.progress-row { display: flex; align-items: center; gap: 8px; }
+.progress-name { font-size: 11px; color: var(--ink2); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.progress-track {
+  flex: 1; height: 4px; background: var(--border);
+  border-radius: 2px; overflow: hidden; min-width: 60px;
+}
+.progress-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width .4s; }
+.progress-fill.done { background: var(--green); }
+.progress-count { font-size: 11px; color: var(--ink3); min-width: 30px; text-align: right; }
+
+.stat-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat-chip {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; text-align: center;
+}
+.stat-n {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--ink);
+  line-height: 1;
+}
+.stat-l { font-size: 10px; color: var(--ink3); margin-top: 3px; }
+.stat-n.green { color: var(--green); }
+.stat-n.amber { color: var(--amber); }
+
+/* Owner legend */
+.legend { display: flex; flex-direction: column; gap: 6px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* Print button */
+.action-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.act-btn {
+  flex: 1; min-width: 100px;
+  padding: 9px 14px; border-radius: 8px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.act-btn.primary { background: var(--ink); color: #f7f6f2; border-color: var(--ink); }
+.act-btn.primary:hover { background: #333; }
+.act-btn.ghost { background: var(--surface); color: var(--ink2); }
+.act-btn.ghost:hover { background: var(--surface2); color: var(--ink); }
+
+/* ── Phase nav complete banner ── */
+.phase-complete {
+  display: none;
+  background: var(--green-bg);
+  border: 1px solid var(--green-mid);
+  border-radius: 12px; padding: 16px 20px;
+  margin-bottom: 20px;
+  align-items: center; gap: 12px;
+}
+.phase-complete.show { display: flex; }
+.phase-complete-icon { font-size: 24px; }
+.phase-complete-text { font-size: 13px; color: var(--green); font-weight: 500; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header { padding: 28px 24px 24px; }
+  .header-right { display: none; }
+  .main-col { padding: 24px 20px; }
+  .layout { grid-template-columns: 1fr; }
+  .side-col { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-left">
+      <div class="eyebrow">Agency OS — Project</div>
+      <h1>Kickoff Checklist</h1>
+      <div class="header-desc">Complete every phase before starting the next. Nothing ships without a tick.</div>
+    </div>
+    <div class="header-right">
+      <div class="progress-ring-wrap">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="progress-ring-bg" cx="40" cy="40" r="36"/>
+          <circle class="progress-ring-fill" id="ring-fill" cx="40" cy="40" r="36"/>
+        </svg>
+        <div class="progress-label">
+          <div class="progress-pct" id="ring-pct">0%</div>
+          <div class="progress-sub">done</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="meta-row">
+    <div class="meta-field">
+      <div class="meta-label">Client name</div>
+      <input class="meta-value" type="text" placeholder="e.g. Luminary Cafe" id="meta-client">
+    </div>
+    <div class="meta-field">
+      <div class="meta-label">Project</div>
+      <input class="meta-value" type="text" placeholder="e.g. Ramadan Campaign" id="meta-project">
+    </div>
+    <div class="meta-field">
+      <div class="meta-label">Account Manager</div>
+      <input class="meta-value" type="text" placeholder="Your name" id="meta-am">
+    </div>
+    <div class="meta-field">
+      <div class="meta-label">Start date</div>
+      <input class="meta-value" type="text" placeholder="e.g. 1 Apr 2026" id="meta-date">
+    </div>
+    <div class="meta-field">
+      <div class="meta-label">Deadline</div>
+      <input class="meta-value" type="text" placeholder="e.g. 30 Apr 2026" id="meta-deadline">
+    </div>
+  </div>
+</div>
+
+<!-- Phase Nav -->
+<div class="phase-nav">
+  <button class="phase-btn active" data-phase="0" onclick="goPhase(0)">
+    <div class="phase-dot">1</div> Client Intake
+  </button>
+  <button class="phase-btn" data-phase="1" onclick="goPhase(1)">
+    <div class="phase-dot">2</div> Team Briefing
+  </button>
+  <button class="phase-btn" data-phase="2" onclick="goPhase(2)">
+    <div class="phase-dot">3</div> Setup & Access
+  </button>
+  <button class="phase-btn" data-phase="3" onclick="goPhase(3)">
+    <div class="phase-dot">4</div> Strategy & Planning
+  </button>
+  <button class="phase-btn" data-phase="4" onclick="goPhase(4)">
+    <div class="phase-dot">5</div> Approval & Launch
+  </button>
+</div>
+
+<!-- Layout -->
+<div class="layout">
+  <div class="main-col">
+
+    <!-- Phase 0: Client Intake -->
+    <div class="phase-panel active" id="phase-0">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:#fff3ee;">📋</div>
+        <div>
+          <div class="phase-title">Client Intake</div>
+          <div class="phase-desc">Before any work begins — gather everything you need from the client.</div>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Documents & Forms</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Client intake form received and complete</div>
+            <div class="check-note">All fields filled — company info, goals, budget, timeline. Chase if incomplete.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Signed proposal or SOW in hand</div>
+            <div class="check-note">No project starts without a signed agreement. Store in Drive under Client > Legal.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">First invoice sent (if applicable)</div>
+            <div class="check-note">50% deposit or first retainer payment requested before kickoff call.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Non-disclosure agreement (NDA) signed if required</div>
+            <div class="check-note">Ask client if NDA is needed. Some industries require it.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Brand Assets Collected</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Logo files received (AI, EPS, or SVG + PNG)</div>
+            <div class="check-note">Request all versions: full colour, white, black. Saved to Drive > Client > Assets.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Brand guidelines document received (if existing)</div>
+            <div class="check-note">Fonts, colours, tone of voice, do's and don'ts.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Product photos / existing visuals shared</div>
+            <div class="check-note">Ask for their best photos. Low quality = low quality output.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-low"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Video footage provided (if video services included)</div>
+            <div class="check-note">Raw footage or links. Confirm format (MP4, MOV).</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Kickoff Call</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Kickoff call scheduled within 3 business days</div>
+            <div class="check-note">Use Calendly or WhatsApp to confirm time. Send invite via email.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Kickoff call completed — notes documented</div>
+            <div class="check-note">Notes saved in Drive. Key decisions and expectations confirmed in writing post-call.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Client's main contact (PIC) confirmed</div>
+            <div class="check-note">Who gives approvals? Who do we WhatsApp? One person only — avoid committee approval chaos.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-label">Intake notes</div>
+        <textarea placeholder="Any special requirements, client preferences, or red flags noted during intake…"></textarea>
+      </div>
+    </div>
+
+    <!-- Phase 1: Team Briefing -->
+    <div class="phase-panel" id="phase-1">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:#fffbeb;">👥</div>
+        <div>
+          <div class="phase-title">Team Briefing</div>
+          <div class="phase-desc">Get your team aligned before execution starts. Confusion now = revisions later.</div>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Internal Setup</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Project card created on tracking board</div>
+            <div class="check-note">Add to the board with: client name, status = Backlog, deadline, assigned team members.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Team members assigned to project</div>
+            <div class="check-note">Confirm who is the designer, content creator, media buyer for this project.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Written project brief shared with team</div>
+            <div class="check-note">Use the Brief Template in Drive. Includes: background, audience, goals, tone, do's & don'ts.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Team has read brief and raised questions</div>
+            <div class="check-note">24-hour window for questions. After that, execution begins — no mid-project brief questions.</div>
+          </div>
+          <span class="check-tag tag-team">Team</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Internal team WhatsApp group updated</div>
+            <div class="check-note">Pin the brief doc link and deadline in the team group.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Deliverable Scope Confirmed</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Full deliverable list documented</div>
+            <div class="check-note">Exactly what are we making? How many posts, ads, designs, reports? Count everything.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Internal deadlines set (2 days before client deadlines)</div>
+            <div class="check-note">Every deliverable has an internal due date. No exceptions.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Revision rounds clarified with team (max 2 rounds)</div>
+            <div class="check-note">Team knows what's included. Round 3 requires AM approval and may be charged.</div>
+          </div>
+          <span class="check-tag tag-team">Team</span>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-label">Briefing notes</div>
+        <textarea placeholder="Key decisions made during briefing, open questions, team concerns…"></textarea>
+      </div>
+    </div>
+
+    <!-- Phase 2: Setup & Access -->
+    <div class="phase-panel" id="phase-2">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:#eef0ff;">🔐</div>
+        <div>
+          <div class="phase-title">Setup & Access</div>
+          <div class="phase-desc">Never chase for passwords mid-campaign. Get everything upfront.</div>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Communication Channels</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Client WhatsApp group created</div>
+            <div class="check-note">Name: [ClientName] x [AgencyName]. Add: client PIC + Account Manager only.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Communication preferences confirmed with client</div>
+            <div class="check-note">WhatsApp, email, or calls? Response time expectations set on both sides.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Social Media & Platform Access</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Facebook Business Manager access granted</div>
+            <div class="check-note">Request Admin or Editor access — not login credentials. Use Business Manager invite.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Instagram account access confirmed</div>
+            <div class="check-note">Connected to Facebook Business Manager or login details stored in agency password vault.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">TikTok / LinkedIn / other platforms access (if applicable)</div>
+            <div class="check-note">Only request access to platforms in scope of the project.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Google Ads / Meta Ads account access (paid campaigns)</div>
+            <div class="check-note">Request via account sharing — never ask for personal login. Verify billing access if managing spend.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Google Analytics / Search Console access</div>
+            <div class="check-note">View access minimum. Editor access if making tag or goal changes.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">File & Workspace Setup</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Google Drive folder structure created</div>
+            <div class="check-note">Client Name > YYYY-MM > Creatives / Copy / Reports / Approvals</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Shared folder link sent to relevant team members</div>
+            <div class="check-note">Everyone on the project has at least View access to the client folder.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Brand assets uploaded to Drive</div>
+            <div class="check-note">Logo, fonts, photos, brand guide — all saved and named correctly.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-low"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Design tool (Canva / Figma) workspace set up for client</div>
+            <div class="check-note">Brand colours and fonts configured. Templates created if recurring deliverables.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-label">Access notes</div>
+        <textarea placeholder="Log any pending access, credentials notes, or special platform requirements…"></textarea>
+      </div>
+    </div>
+
+    <!-- Phase 3: Strategy & Planning -->
+    <div class="phase-panel" id="phase-3">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:#eaf4ee;">🗓</div>
+        <div>
+          <div class="phase-title">Strategy & Planning</div>
+          <div class="phase-desc">Plan the work before working the plan. Client alignment here saves revisions later.</div>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Content & Campaign Strategy</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Content calendar drafted for the month</div>
+            <div class="check-note">Dates, platforms, content types, captions, and hashtags. Submitted to AM for review.</div>
+          </div>
+          <span class="check-tag tag-creator">Creator</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Content calendar approved by client (in writing)</div>
+            <div class="check-note">Send as PDF or shareable Google Sheet. Get "YES" reply on WhatsApp before any design starts.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Ad campaign brief prepared (if paid media in scope)</div>
+            <div class="check-note">Objective, audience, budget split, creative requirements, landing page URL, tracking pixel.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">KPIs and success metrics agreed with client</div>
+            <div class="check-note">What numbers are we chasing? Leads, reach, ROAS, clicks? Confirmed before launch.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Production Scheduling</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Graphic design production schedule set</div>
+            <div class="check-note">Designer knows exactly what to produce and by when. No ambiguity.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Copywriting deadlines set</div>
+            <div class="check-note">Copy must be approved before design starts. Schedule accounts for this dependency.</div>
+          </div>
+          <span class="check-tag tag-creator">Creator</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-low"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Photo or video shoot scheduled (if original content needed)</div>
+            <div class="check-note">Location, date, call time, equipment list, talent confirmed.</div>
+          </div>
+          <span class="check-tag tag-team">Team</span>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-label">Strategy notes</div>
+        <textarea placeholder="Key strategy decisions, audience insights, competitor notes, creative direction…"></textarea>
+      </div>
+    </div>
+
+    <!-- Phase 4: Approval & Launch -->
+    <div class="phase-panel" id="phase-4">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:#f0fff4;">🚀</div>
+        <div>
+          <div class="phase-title">Approval & Launch</div>
+          <div class="phase-desc">Final checks before anything goes live. This is where quality is protected.</div>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Pre-Launch Quality Check</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">All deliverables passed internal review</div>
+            <div class="check-note">AM has reviewed everything. Spelling, branding, pricing, links all checked.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Client has given written approval to publish</div>
+            <div class="check-note">WhatsApp "YES" or email confirmation. Screenshot saved to Drive > Approvals folder.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Image/video specs verified for each platform</div>
+            <div class="check-note">Instagram Feed 1080x1080, Story 1080x1920, Facebook 1200x628, TikTok 1080x1920.</div>
+          </div>
+          <span class="check-tag tag-designer">Designer</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">All links and CTAs tested</div>
+            <div class="check-note">Landing page live, form works, tracking pixel firing, UTM parameters in place.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Ad campaigns reviewed before going live</div>
+            <div class="check-note">Targeting, budget, schedule, creative, pixel — double-checked by media buyer.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+      </div>
+
+      <div class="check-group">
+        <div class="group-label">Post-Launch</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Client notified that work is live</div>
+            <div class="check-note">Send screenshot or link confirming posts are published / ads are running.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-high"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Project card updated to "In Progress" / "Completed" on board</div>
+            <div class="check-note">Keep the tracking board current. This is the team's single source of truth.</div>
+          </div>
+          <span class="check-tag tag-am">AM</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-med"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">First 48-hour performance check scheduled (paid campaigns)</div>
+            <div class="check-note">Set a calendar reminder. Flag to AM if CPM, CTR, or spend looks off.</div>
+          </div>
+          <span class="check-tag tag-media">Media</span>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="flag flag-low"></div>
+          <div class="check-box"></div>
+          <div class="check-body">
+            <div class="check-text">Monthly report reminder set for the 28th</div>
+            <div class="check-note">Team submits performance notes by 28th. AM compiles and sends report by 5th of next month.</div>
+          </div>
+          <span class="check-tag tag-team">Team</span>
+        </div>
+      </div>
+
+      <div class="phase-complete" id="complete-banner">
+        <div class="phase-complete-icon">🎉</div>
+        <div>
+          <div class="phase-complete-text">All phases complete! Project is fully kicked off.</div>
+          <div style="font-size:11px;color:var(--green);margin-top:2px;">Archive this checklist in the client's Drive folder.</div>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-label">Launch notes</div>
+        <textarea placeholder="Any issues at launch, client feedback received, things to watch…"></textarea>
+      </div>
+    </div>
+
+  </div><!-- /main-col -->
+
+  <!-- Sidebar -->
+  <div class="side-col">
+    <div class="side-section">
+      <div class="side-title">Phase Progress</div>
+      <div class="progress-list" id="phase-progress-list">
+        <div class="progress-row">
+          <span class="progress-name">Client Intake</span>
+          <div class="progress-track"><div class="progress-fill" id="bar-0" style="width:0%"></div></div>
+          <span class="progress-count" id="cnt-0">0/11</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-name">Team Briefing</span>
+          <div class="progress-track"><div class="progress-fill" id="bar-1" style="width:0%"></div></div>
+          <span class="progress-count" id="cnt-1">0/8</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-name">Setup & Access</span>
+          <div class="progress-track"><div class="progress-fill" id="bar-2" style="width:0%"></div></div>
+          <span class="progress-count" id="cnt-2">0/11</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-name">Strategy</span>
+          <div class="progress-track"><div class="progress-fill" id="bar-3" style="width:0%"></div></div>
+          <span class="progress-count" id="cnt-3">0/7</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-name">Approval & Launch</span>
+          <div class="progress-track"><div class="progress-fill" id="bar-4" style="width:0%"></div></div>
+          <span class="progress-count" id="cnt-4">0/9</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Overall Stats</div>
+      <div class="stat-chips">
+        <div class="stat-chip"><div class="stat-n green" id="stat-done">0</div><div class="stat-l">Done</div></div>
+        <div class="stat-chip"><div class="stat-n amber" id="stat-remaining">46</div><div class="stat-l">Remaining</div></div>
+        <div class="stat-chip"><div class="stat-n" id="stat-total">46</div><div class="stat-l">Total items</div></div>
+        <div class="stat-chip"><div class="stat-n" id="stat-phases">0/5</div><div class="stat-l">Phases done</div></div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Responsibility Key</div>
+      <div class="legend">
+        <div class="legend-row"><div class="legend-dot" style="background:var(--blue)"></div><span>AM — Account Manager</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--amber)"></div><span>Designer</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--accent)"></div><span>Creator — Content</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:#6366f1"></div><span>Media Buyer</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--ink3)"></div><span>Team — All</span></div>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Priority Key</div>
+      <div class="legend">
+        <div class="legend-row"><div class="legend-dot" style="background:#e53e3e"></div><span>High — Must do</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--amber)"></div><span>Medium — Should do</span></div>
+        <div class="legend-row"><div class="legend-dot" style="background:var(--border2)"></div><span>Low — Nice to have</span></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="act-btn ghost" onclick="resetAll()">↺ Reset</button>
+      <button class="act-btn primary" onclick="window.print()">⎙ Print</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Phase totals (number of check-items per phase)
+const phaseTotals = [11, 8, 11, 7, 9];
+let currentPhase = 0;
+
+function toggle(el) {
+  el.classList.toggle('checked');
+  updateAll();
+}
+
+function goPhase(n) {
+  currentPhase = n;
+  document.querySelectorAll('.phase-panel').forEach((p, i) => p.classList.toggle('active', i === n));
+  document.querySelectorAll('.phase-btn').forEach((b, i) => {
+    b.classList.remove('active');
+    if (i === n) b.classList.add('active');
+  });
+  updateAll();
+}
+
+function getPhaseCounts() {
+  return [0,1,2,3,4].map(i => {
+    const panel = document.getElementById('phase-' + i);
+    const total = panel.querySelectorAll('.check-item').length;
+    const done  = panel.querySelectorAll('.check-item.checked').length;
+    return { total, done };
+  });
+}
+
+function updateAll() {
+  const counts = getPhaseCounts();
+  const totalAll = counts.reduce((s, c) => s + c.total, 0);
+  const doneAll  = counts.reduce((s, c) => s + c.done,  0);
+  const pct = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
+
+  // Ring
+  const circumference = 226;
+  document.getElementById('ring-fill').style.strokeDashoffset = circumference - (circumference * pct / 100);
+  document.getElementById('ring-pct').textContent = pct + '%';
+
+  // Phase bars
+  counts.forEach(({ total, done }, i) => {
+    const p = total ? Math.round(done / total * 100) : 0;
+    const bar = document.getElementById('bar-' + i);
+    bar.style.width = p + '%';
+    bar.classList.toggle('done', p === 100);
+    document.getElementById('cnt-' + i).textContent = done + '/' + total;
+
+    // Phase tab done state
+    const tab = document.querySelector(`.phase-btn[data-phase="${i}"]`);
+    if (p === 100) { tab.classList.add('done'); tab.querySelector('.phase-dot').textContent = '✓'; }
+    else { tab.classList.remove('done'); tab.querySelector('.phase-dot').textContent = i + 1; }
+    if (i === currentPhase) { tab.classList.add('active'); tab.classList.remove('done'); }
+  });
+
+  // Stats
+  document.getElementById('stat-done').textContent = doneAll;
+  document.getElementById('stat-remaining').textContent = totalAll - doneAll;
+  document.getElementById('stat-total').textContent = totalAll;
+  const phasesDone = counts.filter(c => c.done === c.total).length;
+  document.getElementById('stat-phases').textContent = phasesDone + '/5';
+
+  // Complete banner
+  const banner = document.getElementById('complete-banner');
+  if (banner) banner.classList.toggle('show', doneAll === totalAll);
+}
+
+function resetAll() {
+  if (!confirm('Reset all checkboxes?')) return;
+  document.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+  updateAll();
+}
+
+// Init
+updateAll();
+</script>
+</body>
+</html>
