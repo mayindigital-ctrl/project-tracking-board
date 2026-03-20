@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Tracking Board — Agency OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0f;
+  --surface: #17171a;
+  --surface2: #1e1e22;
+  --surface3: #27272c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0eff0;
+  --text2: #8a8a96;
+  --text3: #55555f;
+  --accent: #e8f542;
+  --accent-dim: rgba(232,245,66,0.12);
+  --red: #ff5757;
+  --red-dim: rgba(255,87,87,0.12);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --purple: #c084fc;
+  --purple-dim: rgba(192,132,252,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: 220px; height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 28px 0;
+  z-index: 100;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--text);
+  padding: 0 22px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.nav { padding: 18px 12px; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 400;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 2px;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; }
+.nav-section {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text3);
+  padding: 16px 12px 6px;
+}
+.sidebar-bottom {
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+.avatar-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  cursor: pointer; transition: background .15s;
+}
+.avatar-row:hover { background: var(--surface2); }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  flex-shrink: 0;
+}
+.avatar-info { flex: 1; min-width: 0; }
+.avatar-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.avatar-role { font-size: 11px; color: var(--text3); }
+
+/* ── Main ── */
+.main { margin-left: 220px; min-height: 100vh; }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 600;
+}
+.view-toggle {
+  display: flex; background: var(--surface2); border-radius: 8px;
+  padding: 3px; gap: 2px;
+}
+.view-btn {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s;
+  color: var(--text2); border: none; background: none;
+}
+.view-btn.active { background: var(--surface3); color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.btn {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; transition: all .15s; border: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-ghost { background: var(--surface2); color: var(--text2); }
+.btn-ghost:hover { background: var(--surface3); color: var(--text); }
+.btn-primary { background: var(--accent); color: #0d0d0f; font-weight: 600; }
+.btn-primary:hover { background: #d4e03b; }
+.filter-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.filter-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+  border: 1px solid var(--border2); background: none; color: var(--text2);
+}
+.filter-chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.filter-chip:hover:not(.active) { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.dot { width: 7px; height: 7px; border-radius: 50%; }
+
+/* ── Stats Row ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat-card {
+  background: var(--bg);
+  padding: 20px 28px;
+}
+.stat-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-sub { font-size: 11px; color: var(--text3); }
+.stat-accent { color: var(--accent); }
+.stat-red { color: var(--red); }
+.stat-green { color: var(--green); }
+
+/* ── Board View ── */
+.board { padding: 28px 32px; display: none; }
+.board.active { display: flex; gap: 16px; overflow-x: auto; align-items: flex-start; }
+.col {
+  min-width: 290px; width: 290px; flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.col-header {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.col-title-row { display: flex; align-items: center; gap: 8px; }
+.col-indicator { width: 3px; height: 18px; border-radius: 2px; }
+.col-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; }
+.col-count {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 10px;
+  background: var(--surface3); color: var(--text2);
+}
+.col-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 100px; }
+
+/* Card */
+.project-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  cursor: grab;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+  position: relative;
+}
+.project-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.project-card:active { cursor: grabbing; }
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.card-client {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 4px;
+}
+.card-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+.priority-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag {
+  font-size: 10px; font-weight: 500;
+  padding: 3px 8px; border-radius: 4px;
+}
+.card-footer { display: flex; align-items: center; justify-content: space-between; }
+.card-deadline { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+.card-deadline.overdue { color: var(--red); }
+.card-deadline.soon { color: var(--orange); }
+.avatars { display: flex; }
+.mini-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 600;
+  border: 1.5px solid var(--surface2);
+  margin-left: -6px;
+  flex-shrink: 0;
+}
+.mini-avatar:first-child { margin-left: 0; }
+.progress-bar-wrap { margin: 10px 0 4px; }
+.progress-track {
+  height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden;
+}
+.progress-fill { height: 100%; border-radius: 2px; transition: width .3s; }
+.progress-pct { font-size: 10px; color: var(--text3); text-align: right; margin-top: 3px; }
+
+/* Add card button */
+.add-card-btn {
+  width: 100%; padding: 10px;
+  background: none; border: 1px dashed var(--border);
+  border-radius: 8px; color: var(--text3);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px; cursor: pointer;
+  transition: all .15s; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.add-card-btn:hover { background: var(--surface2); border-color: var(--border2); color: var(--text2); }
+
+/* ── Table View ── */
+.table-view { padding: 24px 32px; display: none; }
+.table-view.active { display: block; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  padding: 0 12px 12px; text-align: left; white-space: nowrap;
+}
+th:first-child { padding-left: 0; }
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background .1s;
+}
+tbody tr:hover { background: var(--surface); }
+td { padding: 14px 12px; vertical-align: middle; }
+td:first-child { padding-left: 0; }
+.td-project { font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.td-client { font-size: 11px; color: var(--text3); }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+.owner-cell { display: flex; align-items: center; gap: 8px; }
+.deadline-cell { font-size: 12px; }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+  z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px;
+  width: 480px; max-width: 95vw;
+  animation: modalIn .2s ease;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 600;
+  margin-bottom: 20px;
+}
+.modal-field { margin-bottom: 16px; }
+.modal-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.modal-input {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text);
+  font-family: 'Instrument Sans', sans-serif; font-size: 13px;
+  outline: none; transition: border-color .15s;
+}
+.modal-input:focus { border-color: var(--accent); }
+select.modal-input option { background: var(--surface2); }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+/* Animations */
+@keyframes slideIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.project-card { animation: slideIn .2s ease backwards; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="logo"><div class="logo-dot"></div>Agency OS</div>
+  <div class="nav">
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item active"><span class="nav-icon">◈</span> Projects</div>
+    <div class="nav-item"><span class="nav-icon">◷</span> Timeline</div>
+    <div class="nav-item"><span class="nav-icon">✦</span> Tasks</div>
+    <div class="nav-section">Clients</div>
+    <div class="nav-item"><span class="nav-icon">◉</span> All Clients</div>
+    <div class="nav-item"><span class="nav-icon">◌</span> Contacts</div>
+    <div class="nav-section">Reports</div>
+    <div class="nav-item"><span class="nav-icon">▣</span> Dashboard</div>
+    <div class="nav-item"><span class="nav-icon">↗</span> Invoices</div>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="avatar-row">
+      <div class="avatar">AM</div>
+      <div class="avatar-info">
+        <div class="avatar-name">Ahmad Rizal</div>
+        <div class="avatar-role">Account Manager</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Projects</div>
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="switchView('board', this)">⊞ Board</button>
+        <button class="view-btn" onclick="switchView('table', this)">≡ Table</button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost">⤓ Export</button>
+      <button class="btn btn-primary" onclick="openModal()">+ New Project</button>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterBy('all', this)">All Projects</button>
+    <button class="filter-chip" onclick="filterBy('mine', this)"><div class="dot" style="background:var(--blue)"></div>My Projects</button>
+    <button class="filter-chip" onclick="filterBy('overdue', this)"><div class="dot" style="background:var(--red)"></div>Overdue</button>
+    <button class="filter-chip" onclick="filterBy('this-week', this)"><div class="dot" style="background:var(--orange)"></div>Due This Week</button>
+    <button class="filter-chip" onclick="filterBy('social', this)">Social Media</button>
+    <button class="filter-chip" onclick="filterBy('ads', this)">Paid Ads</button>
+    <button class="filter-chip" onclick="filterBy('web', this)">Web</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Active Projects</div>
+      <div class="stat-value" id="stat-active">12</div>
+      <div class="stat-sub">across <span class="stat-accent">8 clients</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Due This Week</div>
+      <div class="stat-value stat-orange" id="stat-week">4</div>
+      <div class="stat-sub">deliverables pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Overdue</div>
+      <div class="stat-value stat-red" id="stat-overdue">2</div>
+      <div class="stat-sub">need immediate action</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed</div>
+      <div class="stat-value stat-green" id="stat-done">27</div>
+      <div class="stat-sub">this month</div>
+    </div>
+  </div>
+
+  <!-- Board View -->
+  <div class="board active" id="board-view">
+
+    <!-- Backlog -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-title-row">
+          <div class="col-indicator" style="background:#55555f"></div>
+          <span class="col-name">Backlog</span>
+        </div>
+        <span class="col-count" id="count-backlog">2</span>
+      </div>
+      <div class="col-body" id="col-backlog" ondragover="allowDrop(event)" ondrop="drop(event,'backlog')">
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-7" style="animation-delay:.05s" data-status="backlog" data-tags="social" data-priority="low">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Bloom Wellness</div>
+              <div class="card-title">Q3 Social Media Strategy</div>
+            </div>
+            <div class="priority-dot" style="background:#55555f" title="Low priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-dim);color:var(--blue)">Social</span>
+            <span class="tag" style="background:var(--surface3);color:var(--text2)">Strategy</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:10%;background:var(--text3)"></div></div>
+            <div class="progress-pct">10%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline">📅 May 15</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">SR</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-8" style="animation-delay:.1s" data-status="backlog" data-tags="web" data-priority="medium">
+          <div class="card-top">
+            <div>
+              <div class="card-client">NovaTech</div>
+              <div class="card-title">Landing Page Redesign</div>
+            </div>
+            <div class="priority-dot" style="background:var(--orange)" title="Medium priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--purple-dim);color:var(--purple)">Web</span>
+            <span class="tag" style="background:var(--surface3);color:var(--text2)">Design</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:5%;background:var(--text3)"></div></div>
+            <div class="progress-pct">5%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline">📅 Jun 1</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#2a1a3e;color:var(--purple)">LK</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="add-card-btn" onclick="openModal()">+ Add project</button>
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-title-row">
+          <div class="col-indicator" style="background:var(--blue)"></div>
+          <span class="col-name">In Progress</span>
+        </div>
+        <span class="col-count" id="count-inprogress">4</span>
+      </div>
+      <div class="col-body" id="col-inprogress" ondragover="allowDrop(event)" ondrop="drop(event,'inprogress')">
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-1" style="animation-delay:.05s" data-status="inprogress" data-tags="ads" data-priority="high">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Luminary Cafe</div>
+              <div class="card-title">Ramadan Campaign — Meta Ads</div>
+            </div>
+            <div class="priority-dot" style="background:var(--red)" title="High priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--red-dim);color:var(--red)">Paid Ads</span>
+            <span class="tag" style="background:var(--accent-dim);color:var(--accent)">Active</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:65%;background:var(--blue)"></div></div>
+            <div class="progress-pct">65%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline soon">⚡ Apr 2 — 3 days</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">AM</div>
+              <div class="mini-avatar" style="background:#1a2e1a;color:var(--green)">FH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-2" style="animation-delay:.1s" data-status="inprogress" data-tags="social" data-priority="medium">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Zara Home MY</div>
+              <div class="card-title">April Content Calendar</div>
+            </div>
+            <div class="priority-dot" style="background:var(--orange)" title="Medium priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--blue-dim);color:var(--blue)">Social</span>
+            <span class="tag" style="background:var(--surface3);color:var(--text2)">Content</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:45%;background:var(--blue)"></div></div>
+            <div class="progress-pct">45%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline">📅 Apr 5</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#2a1a3e;color:var(--purple)">NR</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-3" style="animation-delay:.15s" data-status="inprogress" data-tags="web" data-priority="high">
+          <div class="card-top">
+            <div>
+              <div class="card-client">GreenHive Eco</div>
+              <div class="card-title">Brand Identity + Website</div>
+            </div>
+            <div class="priority-dot" style="background:var(--red)" title="High priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-dim);color:var(--green)">Branding</span>
+            <span class="tag" style="background:var(--purple-dim);color:var(--purple)">Web</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:30%;background:var(--blue)"></div></div>
+            <div class="progress-pct">30%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline overdue">🔴 Mar 18 — Overdue</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">AM</div>
+              <div class="mini-avatar" style="background:#2a1a3e;color:var(--purple)">LK</div>
+              <div class="mini-avatar" style="background:#1a2e1a;color:var(--green)">FH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-4" style="animation-delay:.2s" data-status="inprogress" data-tags="ads" data-priority="low">
+          <div class="card-top">
+            <div>
+              <div class="card-client">PeakFit Studio</div>
+              <div class="card-title">Google Ads Setup & Launch</div>
+            </div>
+            <div class="priority-dot" style="background:#55555f" title="Low priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--red-dim);color:var(--red)">Paid Ads</span>
+            <span class="tag" style="background:var(--surface3);color:var(--text2)">Google</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:80%;background:var(--blue)"></div></div>
+            <div class="progress-pct">80%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline">📅 Apr 8</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1a2e1a;color:var(--green)">SR</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="add-card-btn" onclick="openModal()">+ Add project</button>
+      </div>
+    </div>
+
+    <!-- In Review -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-title-row">
+          <div class="col-indicator" style="background:var(--orange)"></div>
+          <span class="col-name">In Review</span>
+        </div>
+        <span class="col-count" id="count-review">3</span>
+      </div>
+      <div class="col-body" id="col-review" ondragover="allowDrop(event)" ondrop="drop(event,'review')">
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-5" style="animation-delay:.05s" data-status="review" data-tags="social" data-priority="medium">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Luminary Cafe</div>
+              <div class="card-title">March Report — Client Approval</div>
+            </div>
+            <div class="priority-dot" style="background:var(--orange)" title="Medium priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--orange-dim);color:var(--orange)">Awaiting Client</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:95%;background:var(--orange)"></div></div>
+            <div class="progress-pct">95%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline soon">⚡ Apr 1 — Today</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">AM</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-6" style="animation-delay:.1s" data-status="review" data-tags="web" data-priority="high">
+          <div class="card-top">
+            <div>
+              <div class="card-client">NovaTech</div>
+              <div class="card-title">SEO Audit Report</div>
+            </div>
+            <div class="priority-dot" style="background:var(--red)" title="High priority"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-dim);color:var(--green)">SEO</span>
+            <span class="tag" style="background:var(--orange-dim);color:var(--orange)">Internal Review</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:90%;background:var(--orange)"></div></div>
+            <div class="progress-pct">90%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline overdue">🔴 Mar 28 — Overdue</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#2a1a3e;color:var(--purple)">NR</div>
+              <div class="mini-avatar" style="background:#1a2e1a;color:var(--green)">FH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-9" style="animation-delay:.15s" data-status="review" data-tags="ads" data-priority="low">
+          <div class="card-top">
+            <div>
+              <div class="card-client">PeakFit Studio</div>
+              <div class="card-title">Ad Creatives — Round 2</div>
+            </div>
+            <div class="priority-dot" style="background:#55555f"></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--red-dim);color:var(--red)">Paid Ads</span>
+            <span class="tag" style="background:var(--surface3);color:var(--text2)">Creative</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:88%;background:var(--orange)"></div></div>
+            <div class="progress-pct">88%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline">📅 Apr 4</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">AM</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="add-card-btn" onclick="openModal()">+ Add project</button>
+      </div>
+    </div>
+
+    <!-- Completed -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-title-row">
+          <div class="col-indicator" style="background:var(--green)"></div>
+          <span class="col-name">Completed</span>
+        </div>
+        <span class="col-count" id="count-completed">3</span>
+      </div>
+      <div class="col-body" id="col-completed" ondragover="allowDrop(event)" ondrop="drop(event,'completed')">
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-c1" style="animation-delay:.05s;opacity:.7" data-status="completed" data-tags="social" data-priority="medium">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Bloom Wellness</div>
+              <div class="card-title">Instagram Rebranding</div>
+            </div>
+            <div style="font-size:14px">✓</div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-dim);color:var(--green)">Done</span>
+            <span class="tag" style="background:var(--blue-dim);color:var(--blue)">Social</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div>
+            <div class="progress-pct" style="color:var(--green)">100%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline" style="color:var(--green)">✓ Delivered Mar 20</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1e3a5f;color:var(--blue)">AM</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-c2" style="animation-delay:.1s;opacity:.7" data-status="completed" data-tags="ads" data-priority="high">
+          <div class="card-top">
+            <div>
+              <div class="card-client">GreenHive Eco</div>
+              <div class="card-title">Earth Day Campaign Brief</div>
+            </div>
+            <div style="font-size:14px">✓</div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-dim);color:var(--green)">Done</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div>
+            <div class="progress-pct" style="color:var(--green)">100%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline" style="color:var(--green)">✓ Delivered Mar 15</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#1a2e1a;color:var(--green)">FH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" draggable="true" ondragstart="drag(event)" id="card-c3" style="animation-delay:.15s;opacity:.7" data-status="completed" data-tags="web" data-priority="low">
+          <div class="card-top">
+            <div>
+              <div class="card-client">Zara Home MY</div>
+              <div class="card-title">March Social Report</div>
+            </div>
+            <div style="font-size:14px">✓</div>
+          </div>
+          <div class="card-tags">
+            <span class="tag" style="background:var(--green-dim);color:var(--green)">Done</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div>
+            <div class="progress-pct" style="color:var(--green)">100%</div>
+          </div>
+          <div class="card-footer">
+            <span class="card-deadline" style="color:var(--green)">✓ Delivered Mar 31</span>
+            <div class="avatars">
+              <div class="mini-avatar" style="background:#2a1a3e;color:var(--purple)">NR</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="add-card-btn" onclick="openModal()">+ Add project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table View -->
+  <div class="table-view" id="table-view">
+    <table>
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Client</th>
+          <th>Status</th>
+          <th>Owner</th>
+          <th>Priority</th>
+          <th>Deadline</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title">New Project</div>
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">Project name</div>
+        <input class="modal-input" type="text" placeholder="e.g. May Content Calendar" id="new-title">
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Client</div>
+        <input class="modal-input" type="text" placeholder="Client name" id="new-client">
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">Status</div>
+        <select class="modal-input" id="new-status">
+          <option value="backlog">Backlog</option>
+          <option value="inprogress">In Progress</option>
+          <option value="review">In Review</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Priority</div>
+        <select class="modal-input" id="new-priority">
+          <option value="high">🔴 High</option>
+          <option value="medium">🟠 Medium</option>
+          <option value="low">⚫ Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-field">
+        <div class="modal-label">Tag / Service</div>
+        <select class="modal-input" id="new-tag">
+          <option value="social">Social Media</option>
+          <option value="ads">Paid Ads</option>
+          <option value="web">Web / SEO</option>
+          <option value="brand">Branding</option>
+          <option value="content">Content</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Deadline</div>
+        <input class="modal-input" type="text" placeholder="e.g. Apr 30" id="new-deadline">
+      </div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Assign to</div>
+      <input class="modal-input" type="text" placeholder="Initials, e.g. AM" id="new-owner">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="addProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──
+const projects = [
+  {id:'card-1', title:'Ramadan Campaign — Meta Ads', client:'Luminary Cafe', status:'inprogress', priority:'high', tags:'ads', deadline:'Apr 2', progress:65, owner:'AM', overdue:false, soon:true},
+  {id:'card-2', title:'April Content Calendar', client:'Zara Home MY', status:'inprogress', priority:'medium', tags:'social', deadline:'Apr 5', progress:45, owner:'NR', overdue:false, soon:false},
+  {id:'card-3', title:'Brand Identity + Website', client:'GreenHive Eco', status:'inprogress', priority:'high', tags:'web', deadline:'Mar 18', progress:30, owner:'AM', overdue:true, soon:false},
+  {id:'card-4', title:'Google Ads Setup & Launch', client:'PeakFit Studio', status:'inprogress', priority:'low', tags:'ads', deadline:'Apr 8', progress:80, owner:'SR', overdue:false, soon:false},
+  {id:'card-5', title:'March Report — Client Approval', client:'Luminary Cafe', status:'review', priority:'medium', tags:'social', deadline:'Apr 1', progress:95, owner:'AM', overdue:false, soon:true},
+  {id:'card-6', title:'SEO Audit Report', client:'NovaTech', status:'review', priority:'high', tags:'web', deadline:'Mar 28', progress:90, owner:'NR', overdue:true, soon:false},
+  {id:'card-7', title:'Q3 Social Media Strategy', client:'Bloom Wellness', status:'backlog', priority:'low', tags:'social', deadline:'May 15', progress:10, owner:'SR', overdue:false, soon:false},
+  {id:'card-8', title:'Landing Page Redesign', client:'NovaTech', status:'backlog', priority:'medium', tags:'web', deadline:'Jun 1', progress:5, owner:'LK', overdue:false, soon:false},
+  {id:'card-9', title:'Ad Creatives — Round 2', client:'PeakFit Studio', status:'review', priority:'low', tags:'ads', deadline:'Apr 4', progress:88, owner:'AM', overdue:false, soon:false},
+  {id:'card-c1', title:'Instagram Rebranding', client:'Bloom Wellness', status:'completed', priority:'medium', tags:'social', deadline:'Mar 20', progress:100, owner:'AM', overdue:false, soon:false},
+  {id:'card-c2', title:'Earth Day Campaign Brief', client:'GreenHive Eco', status:'completed', priority:'high', tags:'ads', deadline:'Mar 15', progress:100, owner:'FH', overdue:false, soon:false},
+  {id:'card-c3', title:'March Social Report', client:'Zara Home MY', status:'completed', priority:'low', tags:'web', deadline:'Mar 31', progress:100, owner:'NR', overdue:false, soon:false},
+];
+
+// ── View Switching ──
+function switchView(view, btn) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('board-view').classList.toggle('active', view === 'board');
+  document.getElementById('table-view').classList.toggle('active', view === 'table');
+  if (view === 'table') buildTable(projects);
+}
+
+// ── Table ──
+function buildTable(data) {
+  const priorityColor = {high:'var(--red)', medium:'var(--orange)', low:'var(--text3)'};
+  const statusConfig = {
+    backlog: {label:'Backlog', bg:'var(--surface3)', color:'var(--text2)'},
+    inprogress: {label:'In Progress', bg:'var(--blue-dim)', color:'var(--blue)'},
+    review: {label:'In Review', bg:'var(--orange-dim)', color:'var(--orange)'},
+    completed: {label:'Completed', bg:'var(--green-dim)', color:'var(--green)'},
+  };
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = data.map(p => {
+    const s = statusConfig[p.status];
+    return `<tr>
+      <td><div class="td-project">${p.title}</div></td>
+      <td><div class="td-client">${p.client}</div></td>
+      <td><span class="status-pill" style="background:${s.bg};color:${s.color}">${s.label}</span></td>
+      <td><div class="owner-cell"><div class="mini-avatar" style="background:var(--surface3);color:var(--text2);width:26px;height:26px;font-size:10px;margin:0">${p.owner}</div><span style="font-size:12px;color:var(--text2)">${p.owner}</span></div></td>
+      <td><span style="color:${priorityColor[p.priority]};font-size:12px;font-weight:500">${p.priority.charAt(0).toUpperCase()+p.priority.slice(1)}</span></td>
+      <td class="deadline-cell" style="color:${p.overdue?'var(--red)':p.soon?'var(--orange)':'var(--text2)'}">${p.overdue?'🔴 ':''}${p.deadline}</td>
+      <td style="min-width:100px">
+        <div class="progress-track"><div class="progress-fill" style="width:${p.progress}%;background:${p.progress===100?'var(--green)':'var(--blue)'}"></div></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right">${p.progress}%</div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Drag & Drop ──
+let dragged = null;
+function drag(e) { dragged = e.target.closest('.project-card'); e.dataTransfer.effectAllowed = 'move'; }
+function allowDrop(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function drop(e, colId) {
+  e.preventDefault();
+  if (!dragged) return;
+  const col = document.getElementById('col-' + colId);
+  const btn = col.querySelector('.add-card-btn');
+  col.insertBefore(dragged, btn);
+  updateCounts();
+}
+function updateCounts() {
+  ['backlog','inprogress','review','completed'].forEach(id => {
+    const col = document.getElementById('col-' + id);
+    const count = col.querySelectorAll('.project-card').length;
+    document.getElementById('count-' + id).textContent = count;
+  });
+}
+
+// ── Filter ──
+function filterBy(type, btn) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(card => {
+    let show = true;
+    if (type === 'overdue') show = card.querySelector('.overdue') !== null;
+    else if (type === 'this-week') show = card.querySelector('.soon') !== null;
+    else if (type === 'mine') show = card.querySelector('.mini-avatar')?.textContent === 'AM';
+    else if (['social','ads','web'].includes(type)) show = card.dataset.tags === type;
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// ── Modal ──
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+let cardCounter = 100;
+function addProject() {
+  const title = document.getElementById('new-title').value.trim();
+  const client = document.getElementById('new-client').value.trim();
+  const status = document.getElementById('new-status').value;
+  const priority = document.getElementById('new-priority').value;
+  const tag = document.getElementById('new-tag').value;
+  const deadline = document.getElementById('new-deadline').value || 'TBD';
+  const owner = (document.getElementById('new-owner').value.trim() || 'ME').substring(0,2).toUpperCase();
+  if (!title || !client) { alert('Please enter a project name and client.'); return; }
+
+  const tagLabels = {social:'Social', ads:'Paid Ads', web:'Web', brand:'Branding', content:'Content'};
+  const tagColors = {social:'var(--blue-dim);color:var(--blue)', ads:'var(--red-dim);color:var(--red)', web:'var(--purple-dim);color:var(--purple)', brand:'var(--green-dim);color:var(--green)', content:'var(--orange-dim);color:var(--orange)'};
+  const priorityColors = {high:'var(--red)', medium:'var(--orange)', low:'#55555f'};
+  const id = 'card-' + (++cardCounter);
+
+  const card = document.createElement('div');
+  card.className = 'project-card';
+  card.id = id; card.draggable = true;
+  card.dataset.status = status; card.dataset.tags = tag; card.dataset.priority = priority;
+  card.addEventListener('dragstart', drag);
+  card.innerHTML = `
+    <div class="card-top">
+      <div>
+        <div class="card-client">${client}</div>
+        <div class="card-title">${title}</div>
+      </div>
+      <div class="priority-dot" style="background:${priorityColors[priority]}"></div>
+    </div>
+    <div class="card-tags">
+      <span class="tag" style="background:${tagColors[tag]}">${tagLabels[tag]}</span>
+      <span class="tag" style="background:var(--accent-dim);color:var(--accent)">New</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-track"><div class="progress-fill" style="width:0%;background:var(--blue)"></div></div>
+      <div class="progress-pct">0%</div>
+    </div>
+    <div class="card-footer">
+      <span class="card-deadline">📅 ${deadline}</span>
+      <div class="avatars"><div class="mini-avatar" style="background:var(--surface3);color:var(--text2)">${owner}</div></div>
+    </div>`;
+
+  const col = document.getElementById('col-' + status);
+  const btn = col.querySelector('.add-card-btn');
+  col.insertBefore(card, btn);
+  updateCounts();
+  closeModal();
+  ['new-title','new-client','new-deadline','new-owner'].forEach(id => document.getElementById(id).value = '');
+}
+</script>
+</body>
+</html>
